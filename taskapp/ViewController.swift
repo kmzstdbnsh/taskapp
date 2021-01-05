@@ -16,6 +16,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     // Realmインスタンスを取得する
     let realm = try! Realm()  // ←追加
+    
+
 
     // DB内のタスクが格納されるリスト。
     // 日付の近い順でソート：昇順
@@ -27,6 +29,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         // Do any additional setup after loading the view.
         tableView.delegate = self
         tableView.dataSource = self
+        search.delegate = self
     }
 
     // データの数（＝セルの数）を返すメソッド
@@ -113,4 +116,25 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         super.viewWillAppear(animated)
         tableView.reloadData()
     }
+    
+    //リターンキーを押したら検索ワードを所得
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        // キーボードを閉じる
+        view.endEditing(true)
+        // 入力された値がnilでなければif文のブロック内の処理を実行
+        if let word = searchBar.text {
+            // デバッグエリアに出力
+            print(word)
+            
+            //検索条件を指定
+            let predicate = NSPredicate(format: "category == %@", searchBar.text!)
+            taskArray = realm.objects(Task.self).filter(predicate)
+            tableView.reloadData()
+
+        }
+        
+        
+
+    }
+    
 }
